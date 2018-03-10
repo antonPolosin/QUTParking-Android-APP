@@ -8,6 +8,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.example.anton.qutparking.Model.JsonResponse;
 import com.example.anton.qutparking.Model.ResponseArray;
@@ -29,7 +30,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
  * Created by anton on 9/02/18.
  */
 
-public class KelvinGrove extends android.support.v4.app.Fragment implements SwipeRefreshLayout.OnRefreshListener{
+public class KelvinGrove extends android.support.v4.app.Fragment {
 
     private static final String TAG = "KelvinGrove";
 
@@ -40,7 +41,9 @@ public class KelvinGrove extends android.support.v4.app.Fragment implements Swip
     private android.support.v7.widget.RecyclerView recyclerView;
     private android.support.v7.widget.RecyclerView.Adapter adapter;
     ArrayList<ParkingData> parkingDataList = new ArrayList<>();
+    int sumParking = 0;
     private SwipeRefreshLayout mSwipeRefreshLayout;
+    private TextView mTextView;
 
     @Nullable
     @Override
@@ -49,8 +52,19 @@ public class KelvinGrove extends android.support.v4.app.Fragment implements Swip
         recyclerView = (android.support.v7.widget.RecyclerView) rootView.findViewById(R.id.recycler_view);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        mSwipeRefreshLayout = rootView.findViewById(R.id.swipe_refresh_layout);
-        mSwipeRefreshLayout.setOnRefreshListener(this);
+
+        mTextView = rootView.findViewById(R.id.carparks_number);
+        if(sumParking <= 30){
+            mTextView.setTextColor(getActivity().getResources().getColor(R.color.lessThen10));
+        }else if(sumParking <= 100){
+            mTextView.setTextColor(getActivity().getResources().getColor(R.color.lessThen50));
+        }else{
+            mTextView.setTextColor(getActivity().getResources().getColor(R.color.allTheRest));
+        }
+
+//        mSwipeRefreshLayout = rootView.findViewById(R.id.swipe_refresh_layout);
+//        mSwipeRefreshLayout.setOnRefreshListener(this);
+
 
         init();
         return rootView;
@@ -88,10 +102,17 @@ public class KelvinGrove extends android.support.v4.app.Fragment implements Swip
                             responseList.get(i).getCarparkData().getTimestamp()
                     ));
                 }
+
+                for(int i = 0; i< responseList.size(); i++){
+                    sumParking += responseList.get(i).getCarparkData().getAvailable();
+                }
+
                 adapter = new RecyclerAdapterKG(parkingDataList, getActivity());
                 recyclerView.setAdapter(adapter);
                 adapter.notifyDataSetChanged();
-                mSwipeRefreshLayout.setRefreshing(false);
+                mTextView.setText(String.valueOf(sumParking));
+//                mTextView.setText(sumParking);
+//                mSwipeRefreshLayout.setRefreshing(false);
             }
 
             @Override
@@ -103,9 +124,9 @@ public class KelvinGrove extends android.support.v4.app.Fragment implements Swip
 
     }
 
-    @Override
-    public void onRefresh() {
-        parkingDataList.clear();
-        init();
-    }
+//    @Override
+//    public void onRefresh() {
+//        parkingDataList.clear();
+//        init();
+//    }
 }

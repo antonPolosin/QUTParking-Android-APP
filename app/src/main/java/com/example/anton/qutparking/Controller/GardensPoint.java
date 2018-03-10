@@ -29,7 +29,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
  * Created by anton on 9/02/18.
  */
 
-public class GardensPoint extends android.support.v4.app.Fragment implements SwipeRefreshLayout.OnRefreshListener{
+public class GardensPoint extends android.support.v4.app.Fragment{
 
     private static final String TAG = "GardensPoint";
 
@@ -40,11 +40,10 @@ public class GardensPoint extends android.support.v4.app.Fragment implements Swi
     private android.support.v7.widget.RecyclerView recyclerView;
     private android.support.v7.widget.RecyclerView.Adapter adapter;
     ArrayList<ParkingData> parkingDataList = new ArrayList<>();
-
-
-    private TextView mTextView;
+    int sumParking = 0;
 
     private SwipeRefreshLayout mSwipeRefreshLayout;
+    private TextView mTextView;
 
 
 
@@ -56,8 +55,11 @@ public class GardensPoint extends android.support.v4.app.Fragment implements Swi
         recyclerView = (android.support.v7.widget.RecyclerView) rootView.findViewById(R.id.recycler_view);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        mSwipeRefreshLayout = rootView.findViewById(R.id.swipe_refresh_layout);
-        mSwipeRefreshLayout.setOnRefreshListener(this);
+        mTextView = rootView.findViewById(R.id.carparks_number);
+
+//        mSwipeRefreshLayout = rootView.findViewById(R.id.swipe_refresh_layout);
+//        mSwipeRefreshLayout.setOnRefreshListener(this);
+
         init();
         return rootView;
 
@@ -67,7 +69,7 @@ public class GardensPoint extends android.support.v4.app.Fragment implements Swi
 
     private void init(){
 
-        mSwipeRefreshLayout.setRefreshing(true);
+//        mSwipeRefreshLayout.setRefreshing(true);
 
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(BASE_URL)
@@ -97,12 +99,30 @@ public class GardensPoint extends android.support.v4.app.Fragment implements Swi
 
                 }
 
+                for(int i = 0; i< responseList.size(); i++){
+
+                    sumParking += responseList.get(i).getCarparkData().getAvailable();
+
+                }
+                Log.d(TAG, "onResponse: total: " + sumParking);
+
+
 //                String timeUpdated = responseList.get(0).getCarparkData().getTimestamp();
 //                mTextView.setText(parkingDataTime.formattedDate(timeUpdated));
                 adapter = new RecyclerAdapterGP(parkingDataList, getActivity());
                 recyclerView.setAdapter(adapter);
                 adapter.notifyDataSetChanged();
-                mSwipeRefreshLayout.setRefreshing(false);
+                mTextView.setText(String.valueOf(sumParking));
+                if(sumParking <= 30){
+                    mTextView.setTextColor(getActivity().getResources().getColor(R.color.lessThen10));
+                }else if(sumParking <= 100){
+                    mTextView.setTextColor(getActivity().getResources().getColor(R.color.lessThen50));
+                }else{
+                    mTextView.setTextColor(getActivity().getResources().getColor(R.color.allTheRest));
+                }
+//                mTextView.setText(sumParking);
+//                mSwipeRefreshLayout.setRefreshing(false);
+
 
             }
 
@@ -116,11 +136,11 @@ public class GardensPoint extends android.support.v4.app.Fragment implements Swi
     }
 
 
-    @Override
-    public void onRefresh() {
-        parkingDataList.clear();
-        init();
-    }
+//    @Override
+//    public void onRefresh() {
+//        parkingDataList.clear();
+//        init();
+//    }
 }
 
 

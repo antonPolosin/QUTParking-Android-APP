@@ -18,6 +18,8 @@ import com.example.anton.qutparking.R;
 import com.example.anton.qutparking.RecyclerAdapterGP;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -44,7 +46,7 @@ public class GardensPoint extends android.support.v4.app.Fragment{
 
     private SwipeRefreshLayout mSwipeRefreshLayout;
     private TextView mTextView;
-
+    private TextView mBestCarpark;
 
 
     @Nullable
@@ -52,13 +54,11 @@ public class GardensPoint extends android.support.v4.app.Fragment{
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.activity_main, container, false);
 
-        recyclerView = (android.support.v7.widget.RecyclerView) rootView.findViewById(R.id.recycler_view);
+        recyclerView = rootView.findViewById(R.id.recycler_view);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         mTextView = rootView.findViewById(R.id.carparks_number);
-
-//        mSwipeRefreshLayout = rootView.findViewById(R.id.swipe_refresh_layout);
-//        mSwipeRefreshLayout.setOnRefreshListener(this);
+        mBestCarpark = rootView.findViewById(R.id.text_best_carpark);
 
         init();
         return rootView;
@@ -69,11 +69,8 @@ public class GardensPoint extends android.support.v4.app.Fragment{
 
     private void init(){
 
-//        mSwipeRefreshLayout.setRefreshing(true);
-
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(BASE_URL)
-                //converter XML
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
 
@@ -86,8 +83,32 @@ public class GardensPoint extends android.support.v4.app.Fragment{
             public void onResponse(Call<JsonResponse> call, Response<JsonResponse> response) {
                 Log.d(TAG, "onResponse: Server Respnse: " + response.toString());
                 Log.d(TAG, "onResponse: received information: " + response.body().toString());
-
+                HashMap<Integer, String> bestCarpark = new HashMap<>();
                 ArrayList<ResponseArray> responseList = response.body().getCarparkResponse();
+                /**
+                 * inserting values into hashmap
+                 */
+                for(int i = 0; i < responseList.size(); i++){
+                    bestCarpark.put(responseList.get(i).getCarparkData().getAvailable(), responseList.get(i).getCarparkName());
+                }
+                /**
+                 * setting first element in the hashmap
+                 */
+                Map.Entry<Integer, String> firstEntry = bestCarpark.entrySet().iterator().next();
+                int largestKey = firstEntry.getKey();
+                String largestKeyValue = firstEntry.getValue();
+                /**
+                 * processing hashmap and getting largest value
+                 */
+                for(Map.Entry<Integer, String> entry : bestCarpark.entrySet()){
+                    int key = entry.getKey();
+                    if(key > largestKey){
+                        largestKey = key;
+                        largestKeyValue = entry.getValue();
+                    }
+                }
+
+                mBestCarpark.setText(largestKeyValue);
 
 
                 for(int i = 0; i < responseList.size(); i++){
@@ -104,11 +125,7 @@ public class GardensPoint extends android.support.v4.app.Fragment{
                     sumParking += responseList.get(i).getCarparkData().getAvailable();
 
                 }
-                Log.d(TAG, "onResponse: total: " + sumParking);
 
-
-//                String timeUpdated = responseList.get(0).getCarparkData().getTimestamp();
-//                mTextView.setText(parkingDataTime.formattedDate(timeUpdated));
                 adapter = new RecyclerAdapterGP(parkingDataList, getActivity());
                 recyclerView.setAdapter(adapter);
                 adapter.notifyDataSetChanged();
@@ -120,11 +137,8 @@ public class GardensPoint extends android.support.v4.app.Fragment{
                 }else{
                     mTextView.setTextColor(getActivity().getResources().getColor(R.color.allTheRest));
                 }
-//                mTextView.setText(sumParking);
-//                mSwipeRefreshLayout.setRefreshing(false);
 
-
-            }
+                }
 
             @Override
             public void onFailure(Call<JsonResponse> call, Throwable t) {
@@ -134,13 +148,6 @@ public class GardensPoint extends android.support.v4.app.Fragment{
         });
 
     }
-
-
-//    @Override
-//    public void onRefresh() {
-//        parkingDataList.clear();
-//        init();
-//    }
 }
 
 

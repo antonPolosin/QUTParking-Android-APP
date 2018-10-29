@@ -48,17 +48,6 @@ public class ParkingData {
         return p.format(d);
     }
 
-//    public int changeColor(String inputString){
-//        private TextView mTextView;
-//        mTextView =
-//        int numberAvailable = Integer.parseInt(inputString);
-//
-//        if(numberAvailable > 50){
-//
-//        }
-//
-//
-//    }
 
     public String getCarparkName() {
         return carparkName;

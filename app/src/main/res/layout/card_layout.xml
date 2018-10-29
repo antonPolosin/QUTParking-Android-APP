@@ -11,9 +11,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/card_layout"
-        app:cardCornerRadius="5dp"
-        app:cardElevation="8dp"
-        android:layout_margin="3dp"
+        android:layout_marginBottom="1dp"
         app:contentPaddingLeft="16dp"
         app:contentPaddingRight="16dp">
         <RelativeLayout
@@ -54,20 +52,18 @@
                 android:gravity="center_vertical"
                 android:text="Available"
                 android:textSize="10sp"
-                android:textColor="@color/colorPrimary"/>
+                android:textColor="#000000"/>
 
             <TextView
                 android:id="@+id/location"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_below="@+id/carparkName"
                 android:fontFamily="sans-serif-black"
-                android:layout_centerHorizontal="true"
                 android:textColor="@color/colorPrimary"
-                android:textSize="15sp"
-                android:layout_alignParentBottom="true"
+                android:textSize="12sp"
                 android:text="Get Direction" />
         </RelativeLayout>
     </android.support.v7.widget.CardView>
-
 
 </LinearLayout>

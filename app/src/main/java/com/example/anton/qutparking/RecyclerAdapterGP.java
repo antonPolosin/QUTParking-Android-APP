@@ -63,7 +63,6 @@ public void onBindViewHolder(final RecyclerAdapterGP.ViewHolder holder, int posi
 }
     public class ViewHolder extends android.support.v7.widget.RecyclerView.ViewHolder implements View.OnClickListener{
 
-    TextView updated;
     TextView carparkName;
     TextView carparkAvailable;
     TextView textAvailable;
@@ -73,13 +72,13 @@ public void onBindViewHolder(final RecyclerAdapterGP.ViewHolder holder, int posi
     public ViewHolder(View itemView) {
         super(itemView);
 
-        carparkName = (TextView) itemView.findViewById(R.id.carparkName);
-        carparkAvailable = (TextView) itemView.findViewById(R.id.carparkAvailable);
-        textAvailable = (TextView) itemView.findViewById(R.id.textAvailable);
+        carparkName = itemView.findViewById(R.id.carparkName);
+        carparkAvailable = itemView.findViewById(R.id.carparkAvailable);
+        textAvailable = itemView.findViewById(R.id.textAvailable);
         location = itemView.findViewById(R.id.location);
-        itemView.setClickable(true);
-        itemView.setOnClickListener(this);
-    }
+        location.setClickable(true);
+        location.setOnClickListener(this);
+        }
 
     @Override
     public void onClick(View view) {

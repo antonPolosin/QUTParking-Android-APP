@@ -46,7 +46,7 @@ public class RecyclerAdapterKG extends android.support.v7.widget.RecyclerView.Ad
 
         holder.carparkName.setText(parkingItem.getCarparkName());
         holder.carparkAvailable.setText(String.valueOf(parkingItem.getCarparkAvailable()));
-//        changing color according to carpark availability
+
         if(parkingItem.getCarparkAvailable() <= 10){
             holder.carparkAvailable.setTextColor(mContext.getResources().getColor(R.color.lessThen10));
         }else if(parkingItem.getCarparkAvailable() <= 50){
@@ -71,12 +71,12 @@ public class RecyclerAdapterKG extends android.support.v7.widget.RecyclerView.Ad
         public ViewHolder(View itemView) {
             super(itemView);
 
-            carparkName = (TextView) itemView.findViewById(R.id.carparkName);
-            carparkAvailable = (TextView) itemView.findViewById(R.id.carparkAvailable);
-            textAvailable = (TextView) itemView.findViewById(R.id.textAvailable);
+            carparkName = itemView.findViewById(R.id.carparkName);
+            carparkAvailable = itemView.findViewById(R.id.carparkAvailable);
+            textAvailable = itemView.findViewById(R.id.textAvailable);
             location = itemView.findViewById(R.id.location);
-            itemView.setClickable(true);
-            itemView.setOnClickListener(this);
+            location.setClickable(true);
+            location.setOnClickListener(this);
         }
 
         @Override

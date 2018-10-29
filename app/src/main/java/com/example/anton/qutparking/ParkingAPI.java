@@ -15,9 +15,7 @@ import retrofit2.http.Url;
  */
 
 public interface ParkingAPI {
-
-
-//    @Headers("Content-Type: application/json")
+    //    @Headers("Content-Type: application/json")
     @GET
     Call<JsonResponse> getData(@Url String url);
 
